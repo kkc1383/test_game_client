@@ -1,14 +1,15 @@
-using UnityEngine;
 using NativeWebSocket;
-using System;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance { get; private set; }
 
-    [SerializeField] private string serverUrl = "ws://localhost:9002";
+    public string serverUrl = "ws://13.125.69.84:9002";
+    public bool isLocalTest;
 
     private WebSocket websocket;
     private int myPlayerId = -1;
@@ -34,6 +35,8 @@ public class NetworkManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        serverUrl = isLocalTest ? "ws://localhost:9002" : serverUrl;
     }
 
     private async void Start()

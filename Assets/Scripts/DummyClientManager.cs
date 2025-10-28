@@ -8,8 +8,7 @@ using UnityEngine;
 public class DummyClientManager : MonoBehaviour
 {
     [SerializeField]
-    [Tooltip("접속할 서버 주소입니다. (NetworkManager와 동일해야 함)")]
-    private string serverUrl = "ws://localhost:9002";
+    private string serverUrl;
 
     [SerializeField]
     [Tooltip("생성할 더미 클라이언트 수")]
@@ -20,6 +19,11 @@ public class DummyClientManager : MonoBehaviour
     private float spawnInterval = 0.2f;
 
     private List<DummyClient> dummyClients = new List<DummyClient>();
+
+    private void Start()
+    {
+        serverUrl = NetworkManager.Instance.serverUrl;
+    }
 
     void Update()
     {
@@ -32,20 +36,20 @@ public class DummyClientManager : MonoBehaviour
 
 
         // --- 테스트용 UI ---
-        // F5 키를 누르면 더미 1개 생성
-        if (Input.GetKeyDown(KeyCode.F5))
+        // 1 키를 누르면 더미 1개 생성
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SpawnOneDummy();
         }
 
-        // F6 키를 누르면 더미 많이 생성
-        if (Input.GetKeyDown(KeyCode.F6))
+        // 2 키를 누르면 더미 많이 생성
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             StartCoroutine(SpawnDummies());
         }
 
-        // F7 키를 누르면 모든 더미 연결 종료
-        if (Input.GetKeyDown(KeyCode.F7))
+        // 3 키를 누르면 모든 더미 연결 종료
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             DisconnectAllDummies();
         }

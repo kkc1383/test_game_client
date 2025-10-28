@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverUrl: ws://13.125.69.84:9002
+  isLocalTest: 0
 --- !u!4 &77334330
 Transform:
   m_ObjectHideFlags: 0
@@ -817,7 +818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91d66b50b5b3dc47be66eeb6edc7be7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverUrl: ws://13.125.69.84:9002
+  serverUrl: 
   numberOfDummies: 5
   spawnInterval: 0.2
 --- !u!4 &664949630
@@ -1794,8 +1795,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 963194228}
   - {fileID: 705507995}
-  - {fileID: 77334330}
   - {fileID: 484138323}
+  - {fileID: 77334330}
   - {fileID: 664949630}
   - {fileID: 338154683}
   - {fileID: 1247300850}
