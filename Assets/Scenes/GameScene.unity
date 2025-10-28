@@ -818,7 +818,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c91d66b50b5b3dc47be66eeb6edc7be7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serverUrl: 
+  serverUrl: ws://13.125.69.84:9002
   numberOfDummies: 5
   spawnInterval: 0.2
 --- !u!4 &664949630

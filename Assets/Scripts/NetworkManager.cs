@@ -8,7 +8,8 @@ public class NetworkManager : MonoBehaviour
 {
     public static NetworkManager Instance { get; private set; }
 
-    public string serverUrl = "ws://13.125.69.84:9002";
+    [SerializeField]
+    private string serverUrl = "ws://13.125.69.84:9002";
     public bool isLocalTest;
 
     private WebSocket websocket;

@@ -8,7 +8,8 @@ using UnityEngine;
 public class DummyClientManager : MonoBehaviour
 {
     [SerializeField]
-    private string serverUrl;
+    private string serverUrl = "ws://13.125.69.84:9002";
+    public bool isLocalTest;
 
     [SerializeField]
     [Tooltip("생성할 더미 클라이언트 수")]
@@ -20,12 +21,9 @@ public class DummyClientManager : MonoBehaviour
 
     private List<DummyClient> dummyClients = new List<DummyClient>();
 
-    private void Start()
+    private void Awake()
     {
-        if (NetworkManager.Instance != null)
-            serverUrl = NetworkManager.Instance.serverUrl;
-        else
-            serverUrl = "ws://13.125.69.84:9002"; // 기본값
+        serverUrl = isLocalTest ? "ws://localhost:9002" : serverUrl;
     }
 
     void Update()
