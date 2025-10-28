@@ -22,7 +22,10 @@ public class DummyClientManager : MonoBehaviour
 
     private void Start()
     {
-        serverUrl = NetworkManager.Instance.serverUrl;
+        if (NetworkManager.Instance != null)
+            serverUrl = NetworkManager.Instance.serverUrl;
+        else
+            serverUrl = "ws://13.125.69.84:9002"; // 기본값
     }
 
     void Update()
