@@ -38,19 +38,19 @@ public class DummyClientManager : MonoBehaviour
 
         // --- 테스트용 UI ---
         // Z 키를 누르면 더미 1개 생성
-        if (Input.GetKeyDown(KeyCode.Z))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SpawnOneDummy();
         }
 
         // X 키를 누르면 더미 많이 생성
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             StartCoroutine(SpawnDummies());
         }
 
         // C 키를 누르면 모든 더미 연결 종료
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             DisconnectAllDummies();
         }
