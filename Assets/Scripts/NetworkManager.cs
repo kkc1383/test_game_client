@@ -2,7 +2,11 @@ using NativeWebSocket;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Concurrent;
+using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 public class NetworkManager : MonoBehaviour
 {
@@ -24,6 +28,11 @@ public class NetworkManager : MonoBehaviour
 
     public int MyPlayerId => myPlayerId;
     public string MyNickname => myNickname;
+
+    private ConcurrentQueue<byte[]> messageQueue = new ConcurrentQueue<byte[]>();
+    private volatile byte[] latestGameStateData = null;
+    [SerializeField]
+    private float MaxNetworkTimeInSeconds = 0.002f;
 
     private void Awake()
     {
@@ -54,6 +63,29 @@ public class NetworkManager : MonoBehaviour
         await websocket.Connect();
     }
 
+    private void Update()
+    {
+#if !UNITY_WEBGL || UNITY_EDITOR
+        websocket?.DispatchMessageQueue();
+#endif
+
+        float startTime = Time.realtimeSinceStartup;
+
+        byte[] stateData = Interlocked.Exchange(ref latestGameStateData, null);
+        if (stateData != null)
+        {
+            HandleMessage(stateData);
+        }
+
+        while (Time.realtimeSinceStartup - startTime < MaxNetworkTimeInSeconds
+               && messageQueue.TryDequeue(out var data))
+        {
+            HandleMessage(data);
+        }
+
+
+    }
+
     private void OnWebSocketConnected()
     {
         Debug.Log("Connected to server!");
@@ -76,7 +108,41 @@ public class NetworkManager : MonoBehaviour
         Debug.Log($"Join request sent: {myNickname}, Color: ({colorR}, {colorG}, {colorB})");
     }
 
+    public class BasePacket
+    {
+        public int type;
+    }
+
     private void OnMessageReceived(byte[] data)
+    {
+        messageQueue.Enqueue(data);
+        try
+        {
+            // JSON 파싱을 최소화하기 위해 'type'만 먼저 읽어옵니다.
+            string json = System.Text.Encoding.UTF8.GetString(data);
+            BasePacket basePacket = JsonConvert.DeserializeObject<BasePacket>(json);
+
+            if (basePacket.type == 4) // GAME_STATE (상태)
+            {
+                // 큐에 넣지 않고, '최신' 상태로 덮어씁니다.
+                // 100개가 밀려와도 마지막 1개만 저장됩니다.
+                // Interlocked는 이 변수를 여러 스레드가 동시에 접근할 때 안전하게 덮어쓰도록 보장합니다.
+                Interlocked.Exchange(ref latestGameStateData, data);
+            }
+            else // JOIN_RESPONSE, JUMP 등 (이벤트)
+            {
+                // 이벤트는 큐에 순서대로 쌓습니다.
+                messageQueue.Enqueue(data);
+            }
+        }
+        catch (Exception e)
+        {
+            // 파싱 실패 등 (이 단계에서는 경고만 하고 넘어가는 것이 좋습니다)
+            Debug.LogWarning($"Message type check error: {e.Message}");
+        }
+    }
+
+    private void HandleMessage(byte[] data)
     {
         string json = System.Text.Encoding.UTF8.GetString(data);
 
@@ -198,13 +264,6 @@ public class NetworkManager : MonoBehaviour
         {
             websocket.SendText(message);
         }
-    }
-
-    private void Update()
-    {
-#if !UNITY_WEBGL || UNITY_EDITOR
-        websocket?.DispatchMessageQueue();
-#endif
     }
 
     private void OnWebSocketDisconnected(WebSocketCloseCode closeCode)

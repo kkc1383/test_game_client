@@ -149,7 +149,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverUrl: ws://13.125.69.84:9002
-  isLocalTest: 0
+  isLocalTest: 1
+  MaxNetworkTimeInSeconds: 0.01
 --- !u!4 &77334330
 Transform:
   m_ObjectHideFlags: 0
@@ -819,6 +820,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serverUrl: ws://13.125.69.84:9002
+  isLocalTest: 1
   numberOfDummies: 5
   spawnInterval: 0.2
 --- !u!4 &664949630
