@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -5,7 +6,6 @@ public class CameraFollow : MonoBehaviour
     [Header("Camera Distance")]
     [SerializeField] private float distance = 10f;
     [SerializeField] private float height = 8f;                 // 실제로는 초기화 시 initialPositionY로 세팅
-    [SerializeField] private float unusedSmoothSpeed = 5f;      // 보간 제거 버전이라 사용 안 함 (남겨둠)
 
     [Header("Initial View")]
     [SerializeField] private float initialPositionY = 4f;       // 시작 Y=4
@@ -36,6 +36,9 @@ public class CameraFollow : MonoBehaviour
 
     public void SetTarget(Transform newTarget)
     {
+        if (!(NetworkManager.Singleton != null && NetworkManager.Singleton.IsClient))
+            return;
+
         target = newTarget;
 
         if (!isInitialized)
